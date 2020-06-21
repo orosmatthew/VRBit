@@ -1,20 +1,52 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Game.gd" type="Script" id=1]
 [ext_resource path="res://models/vive/vr_controller_vive_1_5.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://models/vive/controller_mat.tres" type="Material" id=3]
-[ext_resource path="res://models/hand/handvr.obj" type="ArrayMesh" id=4]
-[ext_resource path="res://models/hand/hand_mat.tres" type="Material" id=5]
+[ext_resource path="res://Box.gd" type="Script" id=4]
+[ext_resource path="res://Box2.gd" type="Script" id=5]
+[ext_resource path="res://models/hand/LHand.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ARVRControllerRight.gd" type="Script" id=7]
+[ext_resource path="res://ARVRControllerLeft.gd" type="Script" id=8]
+[ext_resource path="res://Box3.gd" type="Script" id=9]
+[ext_resource path="res://models/hand/RHand.tscn" type="PackedScene" id=10]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 100, 0.2, 100 )
 
-[sub_resource type="ProceduralSky" id=4]
+[sub_resource type="ConcavePolygonShape" id=2]
+data = PoolVector3Array( -50, 0.1, 50, 50, 0.1, 50, -50, -0.1, 50, 50, 0.1, 50, 50, -0.1, 50, -50, -0.1, 50, 50, 0.1, -50, -50, 0.1, -50, 50, -0.1, -50, -50, 0.1, -50, -50, -0.1, -50, 50, -0.1, -50, 50, 0.1, 50, 50, 0.1, -50, 50, -0.1, 50, 50, 0.1, -50, 50, -0.1, -50, 50, -0.1, 50, -50, 0.1, -50, -50, 0.1, 50, -50, -0.1, -50, -50, 0.1, 50, -50, -0.1, 50, -50, -0.1, -50, 50, 0.1, 50, -50, 0.1, 50, 50, 0.1, -50, -50, 0.1, 50, -50, 0.1, -50, 50, 0.1, -50, -50, -0.1, 50, 50, -0.1, 50, -50, -0.1, -50, 50, -0.1, 50, 50, -0.1, -50, -50, -0.1, -50 )
 
-[sub_resource type="Environment" id=3]
+[sub_resource type="ProceduralSky" id=3]
+
+[sub_resource type="Environment" id=4]
 background_mode = 2
-background_sky = SubResource( 4 )
-ambient_light_energy = 0.0
+background_sky = SubResource( 3 )
+ambient_light_color = Color( 1, 1, 1, 1 )
+ambient_light_energy = 0.15
+
+[sub_resource type="CubeMesh" id=5]
+size = Vector3( 10, 10, 10 )
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_color = Color( 0.772549, 0.403922, 1, 1 )
+
+[sub_resource type="ConvexPolygonShape" id=7]
+points = PoolVector3Array( -5, 5, 5, 5, 5, -5, 5, 5, 5, -5, 5, -5, -5, -5, 5, 5, -5, -5, 5, -5, 5, -5, -5, -5, 5, 5, 5, -5, 5, -5, 5, 5, -5, -5, 5, 5, 5, -5, 5, -5, -5, -5, 5, -5, -5, -5, -5, 5, 5, 5, 5, -5, -5, 5, -5, 5, 5, 5, -5, 5, 5, 5, -5, -5, -5, -5, -5, 5, -5, 5, -5, -5 )
+
+[sub_resource type="CubeMesh" id=8]
+
+[sub_resource type="SpatialMaterial" id=9]
+albedo_color = Color( 0.505882, 1, 0.231373, 1 )
+
+[sub_resource type="ConvexPolygonShape" id=10]
+points = PoolVector3Array( -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1 )
+
+[sub_resource type="SpatialMaterial" id=11]
+albedo_color = Color( 1, 0.945098, 0.360784, 1 )
+
+[sub_resource type="SpatialMaterial" id=12]
+albedo_color = Color( 1, 0.160784, 0.160784, 1 )
 
 [node name="Game" type="Spatial"]
 script = ExtResource( 1 )
@@ -24,37 +56,48 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0 )
 mesh = SubResource( 1 )
 material/0 = null
 
+[node name="StaticBody" type="StaticBody" parent="Floor"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Floor/StaticBody"]
+shape = SubResource( 2 )
+
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
 
 [node name="ARVRCamera" type="ARVRCamera" parent="ARVROrigin"]
 
 [node name="ARVRControllerRight" type="ARVRController" parent="ARVROrigin"]
 controller_id = 2
+script = ExtResource( 7 )
 
 [node name="Mesh" type="MeshInstance" parent="ARVROrigin/ARVRControllerRight"]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0 )
 visible = false
 mesh = ExtResource( 2 )
 material/0 = ExtResource( 3 )
 
-[node name="RightHand" type="MeshInstance" parent="ARVROrigin/ARVRControllerRight"]
-transform = Transform( -0.000105977, 0.993219, 0.116262, 0.550697, 0.0971028, -0.829038, -0.834705, 0.0639376, -0.546973, -0.000389539, 0, 0.0726857 )
-mesh = ExtResource( 4 )
-material/0 = ExtResource( 5 )
+[node name="HandPos" type="Spatial" parent="ARVROrigin/ARVRControllerRight"]
+transform = Transform( -0.013004, 0.990944, 0.133643, 0.633022, 0.111619, -0.766044, -0.774024, 0.0746372, -0.628741, 0, 0, 0.73 )
 
 [node name="ARVRControllerLeft" type="ARVRController" parent="ARVROrigin"]
+script = ExtResource( 8 )
 
 [node name="Mesh" type="MeshInstance" parent="ARVROrigin/ARVRControllerLeft"]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0 )
 visible = false
 mesh = ExtResource( 2 )
 material/0 = ExtResource( 3 )
 
-[node name="LeftHand" type="MeshInstance" parent="ARVROrigin/ARVRControllerLeft"]
-transform = Transform( 0.000105798, -0.993219, -0.116263, 0.550697, 0.097103, -0.829038, -0.834705, 0.0639379, -0.546973, 0, 0, 0.073 )
-mesh = ExtResource( 4 )
-material/0 = ExtResource( 5 )
+[node name="HandPos" type="Spatial" parent="ARVROrigin/ARVRControllerLeft"]
+transform = Transform( -0.000105798, 0.993219, 0.116263, -0.550697, -0.0971029, 0.829038, 0.834705, -0.0639379, 0.546973, 0, 0, 0.73 )
+
+[node name="RHand" parent="ARVROrigin" instance=ExtResource( 10 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.77677, 5.39515, 11.0169 )
+
+[node name="LHand" parent="ARVROrigin" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.28304, 4.11711, 10.4094 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 3 )
+environment = SubResource( 4 )
 
 [node name="Sun" type="DirectionalLight" parent="."]
 transform = Transform( -1, 2.30405e-07, -2.30405e-07, 0, 0.707107, 0.707107, 3.25841e-07, 0.707107, -0.707107, 0, 1.33675, 0 )
@@ -63,13 +106,60 @@ directional_shadow_blend_splits = true
 
 [node name="Ambient" type="DirectionalLight" parent="Sun"]
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0 )
-light_energy = 0.65
+light_energy = 0.25
 
-[node name="Ambient2" type="DirectionalLight" parent="Sun"]
-transform = Transform( 1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, 0, 0, 0 )
-light_energy = 0.65
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 0.881015, 0, 0.473089, 0, 1, 0, -0.473089, 0, 0.881015, -0.211576, 0, -2.3662 )
+mesh = SubResource( 5 )
+material/0 = SubResource( 6 )
 
-[node name="Ambient3" type="DirectionalLight" parent="Sun"]
-transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
-light_energy = 0.65
-directional_shadow_depth_range = 1
+[node name="StaticBody" type="StaticBody" parent="MeshInstance"]
+
+[node name="CollisionShape" type="CollisionShape" parent="MeshInstance/StaticBody"]
+transform = Transform( 1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="RigidBody" type="RigidBody" parent="." groups=[
+"interactable",
+]]
+transform = Transform( 0.876794, 0, 0.480866, 0, 1, 0, -0.480866, 0, 0.876794, -1.06585, 6.63554, 2.29753 )
+script = ExtResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="RigidBody"]
+mesh = SubResource( 8 )
+material/0 = SubResource( 9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="RigidBody"]
+shape = SubResource( 10 )
+
+[node name="RigidBody2" type="RigidBody" parent="." groups=[
+"interactable",
+]]
+transform = Transform( 0.889432, 0, 0.457067, 0, 1, 0, -0.457067, 0, 0.889432, 1.25315, 6.63554, 1.03093 )
+mass = 5.0
+script = ExtResource( 5 )
+
+[node name="MeshInstance" type="MeshInstance" parent="RigidBody2"]
+mesh = SubResource( 8 )
+material/0 = SubResource( 11 )
+
+[node name="CollisionShape" type="CollisionShape" parent="RigidBody2"]
+shape = SubResource( 10 )
+
+[node name="RigidBody3" type="RigidBody" parent="." groups=[
+"interactable",
+]]
+transform = Transform( 0.893395, 0, 0.449272, 0, 1, 0, -0.449272, 0, 0.893395, 3.57901, 6.63554, -0.261796 )
+mass = 10.0
+script = ExtResource( 9 )
+
+[node name="MeshInstance" type="MeshInstance" parent="RigidBody3"]
+mesh = SubResource( 8 )
+material/0 = SubResource( 12 )
+
+[node name="CollisionShape" type="CollisionShape" parent="RigidBody3"]
+shape = SubResource( 10 )
+[connection signal="button_pressed" from="ARVROrigin/ARVRControllerRight" to="ARVROrigin/ARVRControllerRight" method="_on_ARVRControllerRight_button_pressed"]
+[connection signal="button_release" from="ARVROrigin/ARVRControllerRight" to="ARVROrigin/ARVRControllerRight" method="_on_ARVRControllerRight_button_release"]
+[connection signal="button_pressed" from="ARVROrigin/ARVRControllerLeft" to="ARVROrigin/ARVRControllerLeft" method="_on_ARVRControllerLeft_button_pressed"]
+[connection signal="button_release" from="ARVROrigin/ARVRControllerLeft" to="ARVROrigin/ARVRControllerLeft" method="_on_ARVRControllerLeft_button_release"]
