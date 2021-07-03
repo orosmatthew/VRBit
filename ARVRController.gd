@@ -13,6 +13,7 @@ var prev_cs_pos = Vector3()
 var grab_profiles = {"light":[3000,2000,0.125,0.1],
 					 "medium":[2500,1000,0.1,0.05],
 					 "heavy":[1500,500,0.07,0.02]}
+var track_pressed = false
 
 func _ready():
 	if self.get_name() == "ARVRControllerLeft":
@@ -23,7 +24,8 @@ func _ready():
 func _process(delta):
 	Hand.get_node("AnimationPlayer").play("default")
 	Hand.get_node("AnimationPlayer").seek(get_joystick_axis(2)*10.6,true)
-
+	
+	
 
 
 func _physics_process(delta):
@@ -72,8 +74,12 @@ func _physics_process(delta):
 			var force = -collision.normal * push * pow(((get_node("HandPos").global_transform.origin - Hand.global_transform.origin).length()+1),0.2) * pow((velocity.length()+1),0.65)
 			collision.collider.get_parent().get_node("RigidBody").apply_impulse(collision.position - collision.collider.global_transform.origin, force)
 	"""
+	var cam_rot_y = get_parent().get_node("ARVRCamera").get_global_transform().basis.get_euler().y
 	
-
+	if track_pressed == true:
+		get_parent().move(Vector3(get_joystick_axis(0)*delta*100,0,-1*get_joystick_axis(1)*delta*100).rotated(Vector3(0,1,0),cam_rot_y))
+		#get_parent().global_transform.origin+=get_parent().get_parent().get_node("PlayerKinematic").delta_move
+		get_parent().global_transform.origin=get_parent().get_parent().get_node("PlayerKinematic/OriginLoc").global_transform.origin-get_parent().get_node("ARVRCamera").transform.origin
 func button_pressed(button):
 	if button == 15 and grabbing == false:
 		if len(Hand.bodies) != 0:
@@ -95,7 +101,11 @@ func button_pressed(button):
 					Hand.get_node("GrabGoal").global_transform.origin = b.global_transform.origin
 					Hand.get_node("GrabGoal").global_transform.basis = b.global_transform.basis
 					break
-
+	
+	if button == 14:
+		get_parent().get_parent().get_node("PlayerKinematic").global_transform.origin = get_parent().get_node("ARVRCamera").global_transform.origin - get_parent().get_parent().get_node("PlayerKinematic/OriginLoc").transform.origin
+		track_pressed = true
+		
 
 
 func button_release(button):
@@ -114,4 +124,5 @@ func button_release(button):
 		cs.transform = prev_cs_pos
 		
 		grabbing = false
-
+	if button == 14:
+		track_pressed = false
